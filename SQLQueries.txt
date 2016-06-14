@@ -1,0 +1,45 @@
+﻿ALTER PROCEDURE [dbo].[InsertLogInformation] 
+    @ExecutionMessage [nvarchar](max) = null,
+	@PasswordUpdateDate [datetime] = null
+AS  
+BEGIN  
+    SET NOCOUNT ON;    
+    INSERT INTO  dbo.LogInformation(ExecutionMessage, PasswordUpdateDate)  
+    VALUES(@ExecutionMessage, @PasswordUpdateDate)  
+  
+    SELECT SCOPE_IDENTITY()  
+END
+
+  CREATE PROCEDURE [dbo].[AddNewPassword]
+@NewPassword [nchar](40),
+@LoginName [nchar](40)
+   AS
+BEGIN
+    SET NOCOUNT ON;    
+		UPDATE dbo.LoginDetails
+		SET  CurrentPassword = @NewPassword
+		where [UserName] = @LoginName
+END
+
+
+
+CREATE PROCEDURE [dbo].[BackupCurrentPassword]
+@LoginName [nchar](40)
+   AS
+BEGIN
+    SET NOCOUNT ON;    
+		UPDATE dbo.LoginDetails
+		SET  OldPassword = CurrentPassword
+		where [UserName] = @LoginName
+END
+
+
+  CREATE PROCEDURE [dbo].[GetCurrentPassword]
+@LoginName [nchar](40)
+   AS
+BEGIN
+    SET NOCOUNT ON;    
+		select [OldPassword] 
+		from [dbo].[LoginDetails] 
+		where [UserName] = @LoginName
+END
